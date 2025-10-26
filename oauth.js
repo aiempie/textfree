@@ -13,7 +13,7 @@ class OAuth {
     this.oauth_signature_method = "HMAC-SHA1";
     this.realm = "https://api.pinger.com";
 
-    // Consumer secrets from Python version
+    // Consumer secrets for iOS client
     this.consumerSecret = [
       "A4S0xXdDWyE8OZCQ1mxfQrN44SEyFgPgjVRx1fWWjqUDCKO0h26Af1sCt43pjAii&",
       "v6wbtkWK9rLJRdZkmqXF1Zq5aqISgrdtxySG6B3BvOcNuK8r2SlTUOiE9vkfROaR&",

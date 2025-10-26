@@ -3,6 +3,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const { v4: uuidv4 } = require("uuid");
+const { SocksProxyAgent } = require("socks-proxy-agent");
+const axios = require("axios");
 const Textfree = require("./textfree");
 
 const app = express();
@@ -110,8 +112,8 @@ app.post("/login-us", async (req, res) => {
 
     // Use US proxy
     const proxyConfig = {
-      http: "socks5://127.0.0.1:9050",
-      https: "socks5://127.0.0.1:9050",
+      http: new SocksProxyAgent("socks5://127.0.0.1:9050"),
+      https: new SocksProxyAgent("socks5://127.0.0.1:9050"),
     };
     const tf = new Textfree(proxyConfig);
 
@@ -349,6 +351,34 @@ app.post("/create-account", async (req, res) => {
     return res.status(500).json({
       success: false,
       message: `Lỗi tạo tài khoản: ${error.message}`,
+    });
+  }
+});
+
+// Test API connection endpoint
+app.get("/test-api", async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://api.pinger.com/1.0/account/phone/listAvailableDnxNumbers",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "okhttp/3.11.0",
+        },
+      },
+    );
+
+    return res.json({
+      success: true,
+      status: response.status,
+      data: response.data,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      error: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
     });
   }
 });

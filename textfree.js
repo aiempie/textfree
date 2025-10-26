@@ -46,7 +46,7 @@ class Textfree {
       password: password,
       clientId: "textfree-android-" + this.installID,
       marketingId: this._randomString(16),
-      version: "8.45.1",
+      version: "8.50.0",
       versionOS: "5.1.1",
       systemProperties: {
         "device": "unknown",
@@ -110,9 +110,11 @@ class Textfree {
         data,
         {
           headers: header,
-          proxy: this.proxy,
-          httpsAgent: this.proxy.https,
-          httpAgent: this.proxy.http,
+          ...(Object.keys(this.proxy).length > 0 && {
+            proxy: this.proxy,
+            httpsAgent: this.proxy.https,
+            httpAgent: this.proxy.http,
+          }),
         },
       );
 
@@ -151,9 +153,11 @@ class Textfree {
         data,
         {
           headers: header,
-          proxy: this.proxy,
-          httpsAgent: this.proxy.https,
-          httpAgent: this.proxy.http,
+          ...(Object.keys(this.proxy).length > 0 && {
+            proxy: this.proxy,
+            httpsAgent: this.proxy.https,
+            httpAgent: this.proxy.http,
+          }),
         },
       );
       return res.data;
@@ -182,9 +186,11 @@ class Textfree {
     try {
       const res = await axios.post("https://api.pinger.com/1.0/account/phone/reserve", data, {
         headers: header,
-        proxy: this.proxy,
-        httpsAgent: this.proxy.https,
-        httpAgent: this.proxy.http,
+        ...(Object.keys(this.proxy).length > 0 && {
+          proxy: this.proxy,
+          httpsAgent: this.proxy.https,
+          httpAgent: this.proxy.http,
+        }),
       });
       return res.data;
     } catch (error) {
@@ -214,9 +220,11 @@ class Textfree {
     try {
       await axios.post("https://api.pinger.com/1.0/account/phone", data, {
         headers: header,
-        proxy: this.proxy,
-        httpsAgent: this.proxy.https,
-        httpAgent: this.proxy.http,
+        ...(Object.keys(this.proxy).length > 0 && {
+          proxy: this.proxy,
+          httpsAgent: this.proxy.https,
+          httpAgent: this.proxy.http,
+        }),
       });
 
       const oa2 = new OAuth(
@@ -233,9 +241,11 @@ class Textfree {
         {},
         {
           headers: header2,
-          proxy: this.proxy,
-          httpsAgent: this.proxy.https,
-          httpAgent: this.proxy.http,
+          ...(Object.keys(this.proxy).length > 0 && {
+            proxy: this.proxy,
+            httpsAgent: this.proxy.https,
+            httpAgent: this.proxy.http,
+          }),
         },
       );
 
@@ -257,19 +267,21 @@ class Textfree {
 
     const oa = new OAuth(
       "POST",
-      "https://api.pinger.com/2.0/message",
-      `${this.userID}%3Btextfree-android-${this.installID}`,
+      "https://api.pinger.com/2.2/message",
+      "2197597326-3901023446;textfree-voice-iphone-free-7F373366-2056-4EE4-9FEA-430CC1B53091",
     );
     const header = this._getHeaderTemplate();
     header["Authorization"] = oa.createHeader(0, this.token);
     header["x-rest-method"] = "POST";
 
     try {
-      const res = await axios.post("https://api.pinger.com/2.0/message", data, {
+      const res = await axios.post("https://api.pinger.com/2.2/message", data, {
         headers: header,
-        proxy: this.proxy,
-        httpsAgent: this.proxy.https,
-        httpAgent: this.proxy.http,
+        ...(Object.keys(this.proxy).length > 0 && {
+          proxy: this.proxy,
+          httpsAgent: this.proxy.https,
+          httpAgent: this.proxy.http,
+        }),
       });
       return res.data;
     } catch (error) {
@@ -289,7 +301,7 @@ class Textfree {
       installationId: this.installID,
       versionOS: "5.1.1",
       device: "unknown",
-      version: "8.45.1",
+      version: "8.50.0",
     };
 
     const oa = new OAuth(
@@ -304,9 +316,11 @@ class Textfree {
     try {
       const res = await axios.post("https://api.pinger.com/1.0/userAuth", data, {
         headers: header,
-        proxy: this.proxy,
-        httpsAgent: this.proxy.https,
-        httpAgent: this.proxy.http,
+        ...(Object.keys(this.proxy).length > 0 && {
+          proxy: this.proxy,
+          httpsAgent: this.proxy.https,
+          httpAgent: this.proxy.http,
+        }),
       });
       return res.data;
     } catch (error) {
@@ -325,31 +339,29 @@ class Textfree {
       udid: this.udid[0],
       clientId: "textfree-android-" + this.installID,
       installationId: this.installID,
-      version: "8.45.1",
+      version: "8.50.0",
       versionOS: "5.1.1",
       device: "unknown",
     };
 
     const oa = new OAuth(
       "POST",
-      "https://api.pinger.com/1.0/account/username/switchDeviceAndUserAuth",
-      "textfree-android",
+      "https://api.pinger.com/1.0/account/login",
+      "2197597326-3901023446;textfree-voice-iphone-free-7F373366-2056-4EE4-9FEA-430CC1B53091",
     );
     const header = this._getHeaderTemplate();
     header["Authorization"] = oa.createHeader(0);
     header["x-rest-method"] = "POST";
 
     try {
-      const res = await axios.post(
-        "https://api.pinger.com/1.0/account/username/switchDeviceAndUserAuth",
-        data,
-        {
-          headers: header,
+      const res = await axios.post("https://api.pinger.com/1.0/account/login", data, {
+        headers: header,
+        ...(Object.keys(this.proxy).length > 0 && {
           proxy: this.proxy,
           httpsAgent: this.proxy.https,
           httpAgent: this.proxy.http,
-        },
-      );
+        }),
+      });
 
       try {
         const responseData = res.data;
@@ -364,6 +376,11 @@ class Textfree {
       await this.getSipInfo();
       return res.data;
     } catch (error) {
+      if (error.response) {
+        console.log(`[DEBUG] Response status: ${error.response.status}`);
+        console.log(`[DEBUG] Response data:`, error.response.data);
+        console.log(`[DEBUG] Response headers:`, error.response.headers);
+      }
       throw new Error(`Failed to login: ${error.message}`);
     }
   }
@@ -387,9 +404,11 @@ class Textfree {
         {},
         {
           headers: header,
-          proxy: this.proxy,
-          httpsAgent: this.proxy.https,
-          httpAgent: this.proxy.http,
+          ...(Object.keys(this.proxy).length > 0 && {
+            proxy: this.proxy,
+            httpsAgent: this.proxy.https,
+            httpAgent: this.proxy.http,
+          }),
         },
       );
       return res.data;
@@ -417,9 +436,11 @@ class Textfree {
         {},
         {
           headers: header,
-          proxy: this.proxy,
-          httpsAgent: this.proxy.https,
-          httpAgent: this.proxy.http,
+          ...(Object.keys(this.proxy).length > 0 && {
+            proxy: this.proxy,
+            httpsAgent: this.proxy.https,
+            httpAgent: this.proxy.http,
+          }),
         },
       );
 
@@ -491,13 +512,17 @@ class Textfree {
       "x-rest-method": "",
       "Content-Type": "application/json",
       "X-Install-Id": this.xInstallId,
-      "x-client": "textfree-android,8.45.1,214_RC_v.45.1_STORE_CONFIG",
-      "x-os": "android,5.1.1",
+      "x-client": "textfree-voice-iphone-free,13.4,16515",
+      "x-os": "ios,16.7.11",
+      "x-source": "ios",
       "x-gid": "90",
       "x-bg": "0",
       "x-udid": `${this.udid[0]},${this.udid[1]}`,
       "Authorization": "",
-      "User-Agent": "okhttp/3.11.0",
+      "User-Agent": "TextfreeVoice/16515 CFNetwork/1410.1 Darwin/22.6.0",
+      "Accept": "*/*",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Connection": "keep-alive",
     };
   }
 
